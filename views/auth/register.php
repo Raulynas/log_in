@@ -1,7 +1,11 @@
 <?php
-include("./User.php");
+include("../../Controllers/UserControllers.php");
 
-session_start();
+if (!isset($_SESSION["url"])) {
+    session_start();
+}
+
+
 if (!isset($_SESSION["user"])) {
     $_SESSION["user"] = 0;
 }
@@ -11,13 +15,7 @@ if ($_SESSION["user"] == 1) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if ($_POST["password1"] == $_POST["password2"]) {
-        $user = new User();
-        $user->email = $_POST["email"];
-        $user->password = sha1($_POST["password1"]);
-        $user->save();
-        $_SESSION["user"] = 1;
-    }
+    register($_POST);
 }
 
 ?>
@@ -35,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <?php
-    include("./header.php");
+    include("../header.php");
     ?>
 
     <form action="#" method="POST">

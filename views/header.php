@@ -1,7 +1,11 @@
 <div class="header">
     <div class="menu">
-        <a href="./index.php">Home</a>
+        <a href="../index.php">Home</a>
         <?php
+
+
+        $baseUrl = "http://" .  $_SERVER["SERVER_NAME"] . "/" . explode("/", $_SERVER["REQUEST_URI"])[1] . "/" . explode("/", $_SERVER["REQUEST_URI"])[2];
+
         if (!isset($_SESSION["user"])) {
             session_start();
         }
@@ -11,12 +15,12 @@
 
         if ($_SESSION["user"] == 1) { ?>
             <a href="./private.php">Private Area</a>
-            <a href="./index.php?logout=1">Log out</a>
+            <a href=<?= $baseUrl . "/views/index.php?logout=1" ?>>Log out</a>
         <?php } ?>
         <?php
         if ($_SESSION["user"] != 1) { ?>
-            <a href="./login.php">LogIn</a>
-            <a href="./register.php">Register</a>
+            <a href=<?= $baseUrl . "/views/auth/login.php" ?>>LogIn</a>
+            <a href=<?= $baseUrl . "/views/auth/register.php" ?>>Register</a>
         <?php } ?>
     </div>
 </div>

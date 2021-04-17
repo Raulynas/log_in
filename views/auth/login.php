@@ -1,31 +1,22 @@
 <?php
+if (!isset($_SESSION["url"])) {
+    session_start();
+}
+include("../../Controllers/UserControllers.php");
 
-include("./User.php");
-$logged = -1;
-
-session_start();
 if (!isset($_SESSION["user"])) {
     $_SESSION["user"] = 0;
 }
 if ($_SESSION["user"] == 1) {
     header("location:./index.php");
 }
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $Dbh = new Dbh();
-    $sql = "SELECT * from `users` where email = '" . $_POST['email'] . "'";
-    $result = $Dbh->connect()->query($sql);
 
-    $user = new User();
-    while ($row = $result->fetch_assoc()) {
-        $user->email = $row["email"];
-        $user->password = $row["password"];
-    }
-    $logged = 0;
-    if ($user->password == sha1($_POST["password"])) {
-        $_SESSION["user"] = 1;
-        $logged = 1;
-        header("location:./index.php");
-    }
+$_SESSION["logged"] = -1;
+$_SESSION["emailAddress"] = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $_SESSION["emailAddress"] = $_POST["email"];
+    login($_POST);
 }
 ?>
 
@@ -42,19 +33,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <?php
-    include("./header.php");
+    include("../header.php");
 
     ?>
     <?php
 
-    if ($logged == 0) { ?>
+    if ($_SESSION["logged"] == 0) { ?>
         <h2>Wrong password or email address</h2>
     <?php }
     ?>
 
     <form action="" method="POST">
         <label for="email">Email</label><br>
-        <input type="text" id="email" name="email" placeholder="Email Address"><br><br>
+        <input type="text" id="email" name="email" placeholder="Email Address" value="<?= $_SESSION["emailAddress"] ?>"><br><br>
         <label for="password">Password</label><br>
         <input type="password" id="password" name="password" placeholder="Your password"><br><br>
         <input type="submit" value="Log in">
